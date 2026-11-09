@@ -1,5 +1,6 @@
 ;;; init-ui.el --- Appearance and UI configuration -*- lexical-binding: t -*-
 
+;;; Code:
 ;; Default font: Iosevka Nerd Font Mono 11pt
 (set-face-attribute 'default nil :font "Iosevka NFM" :height 110)
 

@@ -30,7 +30,8 @@
               ("M-n" . flymake-goto-next-error)
               ("M-p" . flymake-goto-prev-error)
               ("C-c ! l" . flymake-show-buffer-diagnostics)
-              ("C-c ! L" . flymake-show-project-diagnostics))
+              ("C-c ! L" . flymake-show-project-diagnostics)
+              ("C-c ! c" . consult-flymake))
   :custom
   (flymake-no-changes-timeout 0.5)
   (flymake-fringe-indicator-position 'right-fringe))
@@ -89,6 +90,17 @@
                        #'yasnippet-capf)
                       #'cape-file)))
   (add-hook 'eglot-managed-mode-hook #'ss/eglot-capf))
+
+;; Requires emacs-lsp-booster on PATH (github.com/blahgeek/emacs-lsp-booster/releases)
+(use-package eglot-booster
+  :straight (:type git :host github :repo "jdtsmith/eglot-booster")
+  :after eglot
+  :if (executable-find "emacs-lsp-booster")
+  :custom
+  ;; Emacs 30+ parses JSON natively; the booster only needs to buffer I/O
+  (eglot-booster-io-only t)
+  :config
+  (eglot-booster-mode))
 
 ;; Yasnippet capf adapter - bridges yasnippet into capf/corfu
 (use-package yasnippet-capf
