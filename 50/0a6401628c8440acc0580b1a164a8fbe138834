@@ -1,0 +1,33 @@
+modules/init-prog.el
+  s_0b51eed4558678::t_684dbea7151307 33-34
+  s_0b51eed4558678::t_93a2dd63b0dee7 94-104
+modules/init-editor.el
+  s_0b51eed4558678::t_f9036e1a0042d1 53-55
+  s_0b51eed4558678::t_08cf4845e365cd 12-14
+modules/init-ui.el
+  s_aa9d1883e8d250::t_f092fd33d1a5ae 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "500a6401628c8440acc0580b1a164a8fbe138834",
+  "prompts": {},
+  "sessions": {
+    "s_0b51eed4558678": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "af2c79ce-5dfa-4ba3-950a-aac059281139",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Sebastian Schubert <sebastian.schubert@inola.at>"
+    },
+    "s_aa9d1883e8d250": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "733914cb-8014-473f-b519-6cb4fe6dfe7e",
+        "model": "unknown"
+      },
+      "human_author": "Sebastian Schubert <sebastian.schubert@inola.at>"
+    }
+  }
+}
