@@ -110,7 +110,11 @@ FALLBACK is a contact list, or a function returning one."
 (add-to-list 'auto-mode-alist '("\\.csproj\\'" . nxml-mode))
 
 (use-package sharper
-  :bind ("C-c d" . sharper-main-transient))
+  :commands sharper-main-transient
+  :init
+  (with-eval-after-load 'csharp-mode
+    (keymap-set csharp-mode-map "C-c d" #'sharper-main-transient)
+    (keymap-set csharp-ts-mode-map "C-c d" #'sharper-main-transient)))
 
 (with-eval-after-load 'dape
   (add-to-list 'dape-configs
