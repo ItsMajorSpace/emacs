@@ -1,0 +1,44 @@
+modules/init-org.el
+  s_fddf4cc43b000d::t_e941a0fd81ef33 286-295
+  s_fddf4cc43b000d::t_f769664f393737 302-305
+  s_fddf4cc43b000d::t_217c1584f9260d 209-214,216
+  s_fddf4cc43b000d::t_a08336d2dd42aa 114-115,121,123-130,133-141
+  s_fddf4cc43b000d::t_53d928b8d256e4 171
+  s_fddf4cc43b000d::t_b07eb9398b197c 300,306
+  s_fddf4cc43b000d::t_17b9226e9979d0 296
+  s_fddf4cc43b000d::t_27759dce4bc9f6 36-70,122,285
+  s_fddf4cc43b000d::t_b042a796157773 297-299,301
+  s_fddf4cc43b000d::t_9e0b451220b3c8 240-246
+modules/init-lang.el
+  s_fddf4cc43b000d::t_3ef0d0fcae2113 113-117
+modules/init-ui.el
+  s_f06ee515c3a764::t_36b8a0757ea3ac 4-6,9-19
+  s_f06ee515c3a764::t_085f7a6f72f26a 7-8,20-43,92-123
+  s_f06ee515c3a764::t_b7b9e0c69fbdfa 44-46
+test/org-agenda-test.el
+  s_fddf4cc43b000d::t_f19d43b3975e9d 1-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "00d974f1630003742b1fd3c7038c9e8114b892bb",
+  "prompts": {},
+  "sessions": {
+    "s_f06ee515c3a764": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7185db04-99ef-40a5-afb7-4c2fb6fd05c1",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Sebastian Schubert <sebastian.schubert@inola.at>"
+    },
+    "s_fddf4cc43b000d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8f8dc811-b77a-474d-8717-d29b10c4e633",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Sebastian Schubert <sebastian.schubert@inola.at>"
+    }
+  }
+}
