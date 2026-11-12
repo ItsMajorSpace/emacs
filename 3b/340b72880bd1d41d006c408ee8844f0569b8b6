@@ -1,0 +1,20 @@
+modules/init-org.el
+  s_d7281ff1ae110a::t_f7e991bf785fe0 296,298
+  s_d7281ff1ae110a::t_f68708752ba422 297,300-312
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3b340b72880bd1d41d006c408ee8844f0569b8b6",
+  "prompts": {},
+  "sessions": {
+    "s_d7281ff1ae110a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25355a98-2b40-4d35-a9c2-ece213b3f79f",
+        "model": "claude-fable-5-2"
+      },
+      "human_author": "Sebastian Schubert <sebastian.schubert@inola.at>"
+    }
+  }
+}
