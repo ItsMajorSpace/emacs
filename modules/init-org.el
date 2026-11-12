@@ -293,16 +293,23 @@ Each repo only talks to its own remote; a repo without one is just committed."
 (use-package org-appear
   :hook (org-mode . org-appear-mode))
 
-;; Presentation: one heading per slide
-(use-package dslide
-  :bind (("C-c n p" . dslide-deck-start)
-         :map dslide-mode-map
-         ;; PgDn/PgUp are what presenter remotes send
-         ("<next>" . dslide-deck-forward)
-         ("<prior>" . dslide-deck-backward))
+;; Presentation in the buffer: one heading per slide; C-> and C-< move
+(use-package org-tree-slide
+  :bind ("C-c n p" . org-tree-slide-mode)
   :custom
-  ;; The default separator U+1F892 is not in Iosevka
-  (dslide-breadcrumb-separator " › "))
+  ;; The slide-in animation flickers with org-modern
+  (org-tree-slide-slide-in-effect nil)
+  (org-tree-slide-header t))
+
+;; Presentation in the browser: export to reveal.js
+(use-package org-re-reveal
+  :bind ("C-c n r" . org-re-reveal-export-to-html-and-browse)
+  :custom
+  ;; shortcut: reveal.js comes from the CDN, so presenting needs network;
+  ;; point this at a local checkout to present offline
+  (org-re-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js@5")
+  (org-re-reveal-revealjs-version "4")
+  (org-re-reveal-title-slide "<h1>%t</h1><p>%s</p><p>%a, %d</p>"))
 
 ;;; ------------------------------------------------------------
 ;;; Org-Pomodoro
