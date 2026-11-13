@@ -33,6 +33,41 @@
 Without this, clocking into a meeting or log entry turns it into a task."
   (when state "IN-PROGRESS"))
 
+(defun ss/org-agenda-files (&rest except)
+  "Org files directly in ~/org/ and ~/org/work/, minus file names in EXCEPT.
+work/ is absent on private machines."
+  ;; shortcut: read once at startup, a new org file needs a restart;
+  ;; upgrade when files get created more often than Emacs restarts
+  (seq-remove (lambda (file) (member (file-name-nondirectory file) except))
+              (mapcan (lambda (dir)
+                        (and (file-directory-p dir)
+                             (directory-files dir t "\\`[^.].*\\.org\\'")))
+                      '("~/org/" "~/org/work/"))))
+
+(defun ss/org-agenda-scope ()
+  "Agenda prefix: W for an entry in the work tree, P for a private one."
+  (if (and buffer-file-name (file-in-directory-p buffer-file-name "~/org/work/"))
+      "W" "P"))
+
+(defun ss/org-agenda-hide-empty-blocks ()
+  "Delete agenda blocks that consist of a header line only."
+  (let ((inhibit-read-only t)
+        (separator (concat "^" (regexp-quote (make-string 5 org-agenda-block-separator))
+                           ".*\n"))
+        (end (point-max)))
+    (goto-char end)
+    (while (re-search-backward separator nil t)
+      (let ((block-start (match-beginning 0)))
+        (when (< (how-many "^.+$" (match-end 0) end) 2)
+          (delete-region block-start end))
+        (setq end block-start)
+        (goto-char end)))))
+
+(defun ss/org-dashboard ()
+  "Open the developer dashboard agenda."
+  (interactive)
+  (org-agenda nil "d"))
+
 (defun ss/org-git (dir &rest args)
   "Run git with ARGS in DIR, log to *org-sync*, return the exit code."
   (with-current-buffer (get-buffer-create "*org-sync*")
@@ -76,19 +111,34 @@ Each repo only talks to its own remote; a repo without one is just committed."
          ("C-c l" . org-store-link)
          ("C-c c" . org-capture)
          ("C-c n s" . ss/org-sync)
-         ;; Everything else in org-mode-map uses org's defaults
-         :map org-mode-map
-         ("C-c C-a" . org-archive-subtree))
+         ("C-c n a" . ss/org-dashboard))
+  ;; org-mode-map keeps org's defaults; archive is C-c C-x C-a
 
   :custom
   ;; Set default directory for org files
   (org-directory "~/org")
 
-  ;; Every .org file in both trees; work/ is absent on private machines
-  (org-agenda-files (seq-filter #'file-directory-p '("~/org/" "~/org/work/")))
+  (org-agenda-files (ss/org-agenda-files "archive.org"))
+
+  ;; Buffer appearance
+  (org-startup-folded 'show2levels)
+  (org-ellipsis "…")
+  (org-hide-emphasis-markers t)
+  ;; org-modern draws tags as pills right after the heading
+  (org-auto-align-tags nil)
+  (org-tags-column 0)
+  (org-agenda-tags-column 0)
 
   ;; Agenda settings
-  (org-agenda-start-with-log-mode t)
+  (org-agenda-window-setup 'only-window)
+  (org-agenda-restore-windows-after-quit t)
+  (org-agenda-skip-scheduled-if-done t)
+  (org-agenda-skip-deadline-if-done t)
+  (org-agenda-prefix-format
+   '((agenda . " %(ss/org-agenda-scope) %?-12t% s")
+     (todo . " %(ss/org-agenda-scope) %-5e ")
+     (tags . " %(ss/org-agenda-scope) %-5e ")
+     (search . " %(ss/org-agenda-scope) ")))
   (org-log-done 'time)
   (org-log-into-drawer t)
 
@@ -118,9 +168,7 @@ Each repo only talks to its own remote; a repo without one is just committed."
   (org-priority-lowest ?C)
   (org-priority-default ?B)
   (org-priority-faces
-   '((?A . (:foreground "red" :weight bold))
-     (?B . (:foreground "yellow"))
-     (?C . (:foreground "green"))))
+   '((?A . error) (?B . warning) (?C . success)))
 
   ;; Developer-focused tags
   (org-tag-alist
@@ -158,7 +206,14 @@ Each repo only talks to its own remote; a repo without one is just committed."
   ;; Initialize clock persistence
   (org-clock-persistence-insinuate)
 
+  ;; Heading sizes; the user theme survives `load-theme'
+  (custom-set-faces
+   '(org-document-title ((t (:height 1.4))))
+   '(org-level-1 ((t (:height 1.2))))
+   '(org-level-2 ((t (:height 1.1)))))
+
   ;; Agenda appearance enhancements
+  (add-hook 'org-agenda-finalize-hook #'ss/org-agenda-hide-empty-blocks)
   (setq org-agenda-block-separator ?─)
   (setq org-agenda-time-grid
         '((daily today require-timed)
@@ -181,6 +236,13 @@ Each repo only talks to its own remote; a repo without one is just committed."
                   ((org-agenda-overriding-header "Blocked / Waiting")))
             (todo "NEXT"
                   ((org-agenda-overriding-header "Next Actions (Ready to pick up)")
+                   (org-agenda-sorting-strategy '(priority-down effort-up))))
+            (todo "TODO"
+                  ((org-agenda-overriding-header "Backlog (undated, top 15)")
+                   (org-agenda-files (ss/org-agenda-files "archive.org" "inbox.org"))
+                   (org-agenda-skip-function
+                    '(org-agenda-skip-entry-if 'scheduled 'deadline))
+                   (org-agenda-max-entries 15)
                    (org-agenda-sorting-strategy '(priority-down effort-up))))
             (tags "LEVEL=1"
                   ((org-agenda-overriding-header "Inbox (Needs Processing)")
@@ -219,6 +281,35 @@ Each repo only talks to its own remote; a repo without one is just committed."
           ("wj" "Log / time track" entry (file+olp+datetree "~/org/work/journal.org")
            "* %<%H:%M> %? :journal:\n"
            :clock-in t :clock-resume t :empty-lines 1))))
+
+;;; ------------------------------------------------------------
+;;; Appearance
+;;; ------------------------------------------------------------
+(use-package org-modern
+  :hook ((org-mode . org-modern-mode)
+         (org-agenda-finalize . org-modern-agenda)))
+
+;; Show emphasis markers again while point is on the word
+(use-package org-appear
+  :hook (org-mode . org-appear-mode))
+
+;; Presentation in the buffer: one heading per slide; C-> and C-< move
+(use-package org-tree-slide
+  :bind ("C-c n p" . org-tree-slide-mode)
+  :custom
+  ;; The slide-in animation flickers with org-modern
+  (org-tree-slide-slide-in-effect nil)
+  (org-tree-slide-header t))
+
+;; Presentation in the browser: export to reveal.js
+(use-package org-re-reveal
+  :bind ("C-c n r" . org-re-reveal-export-to-html-and-browse)
+  :custom
+  ;; shortcut: reveal.js comes from the CDN, so presenting needs network;
+  ;; point this at a local checkout to present offline
+  (org-re-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js@5")
+  (org-re-reveal-revealjs-version "4")
+  (org-re-reveal-title-slide "<h1>%t</h1><p>%s</p><p>%a, %d</p>"))
 
 ;;; ------------------------------------------------------------
 ;;; Org-Pomodoro

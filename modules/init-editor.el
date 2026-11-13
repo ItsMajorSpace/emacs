@@ -9,6 +9,9 @@
   (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'" "\\.env\\'" "\\.env\\."))
   (undo-fu-session-global-mode))
 
+(use-package vundo
+  :bind ("C-x u" . vundo))
+
 (use-package dtrt-indent
   :hook (prog-mode . dtrt-indent-mode)
   :custom
@@ -47,8 +50,9 @@
          ("C-S-c C-S-c" .   mc/edit-lines)
          ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
 
-(use-package expand-region
-  :bind ("C-=" . er/expand-region))
+(use-package expreg
+  :bind (("C-=" . expreg-expand)
+         ("C-+" . expreg-contract)))
 
 (use-package smartparens
   :hook (prog-mode text-mode)
