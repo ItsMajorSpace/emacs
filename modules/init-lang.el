@@ -176,6 +176,39 @@ FALLBACK is a contact list, or a function returning one."
                                       "debug-adapters/java-debug/com.microsoft.java.debug.plugin-*.jar")))))))))
 
 ;;; ------------------------------------------------------------
+;;; Dart, Flutter
+;;; ------------------------------------------------------------
+;; Requires: dart and flutter on PATH (exec-path-from-shell copies it on macOS).
+;; LSP: `dart language-server' (eglot's default entry for dart-mode).
+;; Debugger: `flutter debug_adapter' (dape's built-in `flutter' config, which
+;; targets every device; narrow it at the prompt, e.g. flutter :toolArgs ["-d" "macos"]).
+;; Formatting on save: apheleia (dart format).
+;; Hot reload and the other `flutter run' keys: flutter.el, under C-c f.
+
+(add-hook 'dart-mode-hook #'eglot-ensure)
+
+(with-eval-after-load 'eglot
+  (setq-default eglot-workspace-configuration
+                (plist-put (default-value 'eglot-workspace-configuration) :dart
+                           '(:completeFunctionCalls t
+                             :showTodos t))))
+
+(use-package dart-mode
+  :mode "\\.dart\\'")
+
+(use-package flutter
+  :after dart-mode
+  :bind (:map dart-mode-map
+              ("C-c f r" . flutter-run-or-hot-reload)
+              ("C-c f R" . flutter-hot-restart)
+              ("C-c f d" . flutter-run-device)
+              ("C-c f q" . flutter-quit)
+              ("C-c f v" . flutter-open-devtools)
+              ("C-c f t t" . flutter-test-at-point)
+              ("C-c f t f" . flutter-test-current-file)
+              ("C-c f t a" . flutter-test-all)))
+
+;;; ------------------------------------------------------------
 ;;; YAML, Docker, Compose, .env
 ;;; ------------------------------------------------------------
 ;; Requires: npm i -g yaml-language-server dockerfile-language-server-nodejs

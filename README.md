@@ -27,10 +27,11 @@ This repository contains a modern Emacs 31+ configuration tailored for software 
 
 ### Development & Languages
 - **Syntax Highlighting**: Built-in tree-sitter (`treesit`) with native major modes (`*-ts-mode`). Auto-installs missing grammars. Supported out-of-the-box: TypeScript, JavaScript, HTML, CSS, JSON, YAML, Go, C, C#, Astro, Dockerfile.
-- **Language Server Protocol (LSP)**: `eglot` (built-in). Pre-configured for C, C#, Go, TypeScript, HTML/CSS, JSON, YAML, Dockerfile/Compose, Angular, Razor, and Astro.
-- **Debugging (DAP)**: `dape`. Configured for .NET Core (`netcoredbg`), Go (`dlv`), and Node.js/Next.js (`js-debug`).
+- **Language Server Protocol (LSP)**: `eglot` (built-in). Pre-configured for C, C#, Go, TypeScript, HTML/CSS, JSON, YAML, Dockerfile/Compose, Angular, Razor, Astro, and Dart/Flutter.
+- **Debugging (DAP)**: `dape`. Configured for .NET Core (`netcoredbg`), Go (`dlv`), Node.js/Next.js (`js-debug`), and Flutter (`flutter debug_adapter`).
 - **Diagnostics**: Built-in `flymake`.
 - **Formatting**: `apheleia` (asynchronous, cursor-preserving formatting).
+- **Dart/Flutter**: `dart-mode` with `dart language-server` via eglot, `flutter.el` for hot reload/restart, devices and tests (`C-c f`). Needs `dart` and `flutter` on `PATH`.
 - **Project Management**: built-in `project.el` (`C-x p` / `C-c p`) combined with `perspective` (`persp-mode`); switching projects (`C-c p p`) opens a perspective per project.
 
 ### Git & Org
